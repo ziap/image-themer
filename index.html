@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Image themer</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="ui-container">
+                <h3>
+                    Palette
+                    <select name="select-palette" id="select-palette"></select>
+                    <button id="add-color">Add color</button>
+                </h3>
+                <div id="palette"></div>
+                <button id="process-image">Process</button>
+            </div>
+            <div class="ui-container" id="image-container">
+                <input type="file" name="file-input" id="file-input" hidden />
+                <label for="file-input"></label>
+                <canvas></canvas>
+            </div>
+        </div>
+    </body>
+    <script src="script.js"></script>
+</html>
