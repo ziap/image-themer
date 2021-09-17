@@ -1,4 +1,4 @@
-(() => {
+;(() => {
     document.getElementById('file-input').addEventListener('change', loadImage)
     document.getElementById('add-color').addEventListener('click', addColor)
     document.getElementById('process-image').addEventListener('click', updateCanvas)
@@ -119,8 +119,6 @@
                     first = false
                 }
             }
-            document
-                .getElementById('select-palette')
-                .addEventListener('change', () => loadpalette(data[document.getElementById('select-palette').value]))
+            document.getElementById('select-palette').addEventListener('change', e => loadpalette(data[e.target.value]))
         })
 })()
