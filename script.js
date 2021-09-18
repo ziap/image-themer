@@ -9,19 +9,33 @@
 
     canvas.width = 800
     canvas.height = 450
+
+    // Draw the upload image text
     ctx.font = 'lighter 40px sans-serif'
     ctx.textAlign = 'center'
     ctx.fillStyle = '#ccc'
     ctx.fillText('Upload image', canvas.width / 2, 150)
 
+    /**
+     * Display the image to the canvas
+     */
     function displayImage() {
+        // Resize the canvas
         canvas.width = image.width
         canvas.height = image.height
+
+        // Change the canvas display size
         canvas.style.width = '800px'
         canvas.style.height = (800 / image.width) * image.height + 'px'
+
+        // Draw the image to the canvas
         ctx.drawImage(image, 0, 0)
     }
 
+    /**
+     * Load an image from the file input
+     * @param {Event} e 
+     */
     function loadImage(e) {
         const reader = new FileReader()
         reader.onload = event => {
@@ -35,6 +49,11 @@
         reader.readAsDataURL(e.target.files[0])
     }
 
+    /**
+     * Convert hex string to rgb
+     * @param {string} hex 
+     * @returns {object}
+     */
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
         return result
@@ -46,33 +65,48 @@
             : null
     }
 
+    /**
+     * Recolor the image
+     */
     function updateCanvas() {
+        // Check if image exists
         if (!image.src) return
+
+        // Load image to canvas
         displayImage()
 
+        // Experimental: weighted color
         const weight = [1, 1, 1] // [0.299, 0.587, 0.114]
 
+        // Retrieve the color palette from the document
         const palette = []
         for (colorInp of document.getElementsByClassName('palette-color')) palette.push(hexToRgb(colorInp.value))
 
+        // Get array of pixels from the canvas
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const data = imgData.data
+        const {data} = imgData
 
+        // Loop over every pixel, each pixel is 3 adjacent array element representing r, g, b
         for (let i = 0; i < data.length; i += 4) {
             const red = data[i]
             const green = data[i + 1]
             const blue = data[i + 2]
+
+            // A.K.A the value dimension of the HSV color model
             const brightness = Math.max(red, green, blue)
 
             let minDiff = Infinity
-
             for (const { r, g, b } of palette) {
-                const diffR = Math.abs(r - red) * weight[0]
-                const diffG = Math.abs(g - green) * weight[1]
-                const diffB = Math.abs(b - blue) * weight[2]
+                // Find the differnce between two color using the Euclidean distance
+                const diffR = (r - red) * weight[0]
+                const diffG = (g - green) * weight[1]
+                const diffB = (b - blue) * weight[2]
                 const diff = diffR * diffR + diffG * diffG + diffB * diffB
+
                 if (diff < minDiff) {
                     minDiff = diff
+
+                    // Adjust the brightness to match the original pixel color
                     const scale = brightness / Math.max(r, g, b)
                     data[i] = r * scale
                     data[i + 1] = g * scale
@@ -80,22 +114,38 @@
                 }
             }
         }
+
+        // Draw the recolored image to the canvas
         ctx.putImageData(imgData, 0, 0)
     }
 
+    /**
+     * Add a color to the selected palette
+     */
     function addColor() {
+        // Create the elements
         const elem = document.createElement('div')
         const inp = document.createElement('input')
         const rem = document.createElement('button')
+
+        // Set the attributes
         inp.className = 'palette-color'
         inp.type = 'color'
-        rem.addEventListener('click', () => document.getElementById('palette').removeChild(elem))
         rem.innerHTML = '×'
+
+        // Add click event to the remove button
+        rem.addEventListener('click', () => document.getElementById('palette').removeChild(elem))
+
+        // Append the elements to the document
         elem.appendChild(inp)
         elem.appendChild(rem)
         document.getElementById('palette').appendChild(elem)
     }
 
+    /**
+     * Load a color palette
+     * @param {string[]} palette 
+     */
     function loadpalette(palette) {
         const paletteContainer = document.getElementById('palette')
         const paletteInp = paletteContainer.getElementsByClassName('palette-color')
@@ -104,6 +154,7 @@
         for (let i = 0; i < palette.length; i++) paletteInp[i].value = palette[i]
     }
 
+    // Add the palettes from themes.json
     fetch('themes.json')
         .then(res => res.json())
         .then(data => {
@@ -111,10 +162,10 @@
             for (const theme of Object.keys(data)) {
                 const opt = document.createElement('option')
                 opt.value = opt.innerHTML = theme
-                if (first) opt.selected = true
                 document.getElementById('select-palette').appendChild(opt)
+
+                // Load the first palette
                 if (first) {
-                    opt.selected = true
                     loadpalette(data[theme])
                     first = false
                 }

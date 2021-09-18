@@ -8,18 +8,18 @@ Useful for converting wallpapers for consistent theming.
 
 ![](result.png)
 
-Theme from left to right: [Original](https://i.redd.it/i0eebbqruun71.jpg), Nord, One Dark, Gruvbox, Dracula
+Theme from left to right: [Original](https://i.redd.it/i0eebbqruun71.jpg), Nord, One Dark, Gruvbox, Dracula.
 
 # How does it work?
 
  - Go through every pixel of an image.
  - Set it to the closest color from a palette.
- - Change the brightness to match the original pixel.
+ - Adjust the brightness to match the original pixel.
 
 # Limitations
 
 Converting images to a palette with lesser colors are likely to reduce the quality.
-So keep in mind that the program works best with palette that have 16 or more colors and images that have distinct colors and outline, minimal blur/gradient and high resolution.
+So keep in mind that the program works best with palette that have 16 or more colors and images that have distinct colors and outlines, minimal blur/gradient and high resolution.
 
 # Improvements
 
