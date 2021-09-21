@@ -34,7 +34,7 @@
 
     /**
      * Load an image from the file input
-     * @param {Event} e 
+     * @param {Event} e - The file upload event
      */
     function loadImage(e) {
         const reader = new FileReader()
@@ -51,8 +51,8 @@
 
     /**
      * Convert hex string to rgb
-     * @param {string} hex 
-     * @returns {object}
+     * @param {string} hex - The hex string
+     * @returns {{r: string, g: string, b: string}} - The RGB color object
      */
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -84,7 +84,7 @@
 
         // Get array of pixels from the canvas
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const {data} = imgData
+        const { data } = imgData
 
         // Loop over every pixel, each pixel is 3 adjacent array element representing r, g, b
         for (let i = 0; i < data.length; i += 4) {
@@ -92,10 +92,13 @@
             const green = data[i + 1]
             const blue = data[i + 2]
 
+            let newColor = { r: 0, g: 0, b: 0 }
+
             // A.K.A the value dimension of the HSV color model
             const brightness = Math.max(red, green, blue)
 
             let minDiff = Infinity
+
             for (const { r, g, b } of palette) {
                 // Find the differnce between two color using the Euclidean distance
                 const diffR = (r - red) * weight[0]
@@ -104,15 +107,15 @@
                 const diff = diffR * diffR + diffG * diffG + diffB * diffB
 
                 if (diff < minDiff) {
+                    newColor = { r, g, b }
                     minDiff = diff
-
-                    // Adjust the brightness to match the original pixel color
-                    const scale = brightness / Math.max(r, g, b)
-                    data[i] = r * scale
-                    data[i + 1] = g * scale
-                    data[i + 2] = b * scale
                 }
             }
+
+            const scale = brightness / Math.max(newColor.r, newColor.g, newColor.b)
+            data[i] = newColor.r * scale
+            data[i + 1] = newColor.g * scale
+            data[i + 2] = newColor.b * scale
         }
 
         // Draw the recolored image to the canvas
@@ -134,7 +137,7 @@
         rem.innerHTML = '×'
 
         // Add click event to the remove button
-        rem.addEventListener('click', () => document.getElementById('palette').removeChild(elem))
+        rem.addEventListener('click', () => elem.remove())
 
         // Append the elements to the document
         elem.appendChild(inp)
@@ -144,12 +147,12 @@
 
     /**
      * Load a color palette
-     * @param {string[]} palette 
+     * @param {string[]} palette - An array of color palette in hex format
      */
     function loadpalette(palette) {
         const paletteContainer = document.getElementById('palette')
         const paletteInp = paletteContainer.getElementsByClassName('palette-color')
-        while (paletteInp.length > palette.length) paletteContainer.removeChild(paletteContainer.lastChild)
+        while (paletteInp.length > palette.length) paletteContainer.lastChild.remove()
         while (paletteInp.length < palette.length) addColor()
         for (let i = 0; i < palette.length; i++) paletteInp[i].value = palette[i]
     }
