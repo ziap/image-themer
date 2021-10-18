@@ -6,7 +6,7 @@ Useful for converting wallpapers for consistent theming.
 
 # Demo
 
-![](result.png)
+![](logo.png)
 
 Theme from left to right: [Original](https://i.redd.it/i0eebbqruun71.jpg), Nord, One Dark, Gruvbox, Dracula.
 
