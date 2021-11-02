@@ -18,7 +18,7 @@ Theme from left to right: [Original](https://i.redd.it/i0eebbqruun71.jpg), Nord,
 
 # Limitations
 
-Converting images to a palette with lesser colors are likely to reduce the quality.
+Converting images to a palette with less colors are likely to reduce the quality.
 So keep in mind that the program works best with palette that have 16 or more colors and images that have distinct colors and outlines, minimal blur/gradient and high resolution.
 
 # Improvements
