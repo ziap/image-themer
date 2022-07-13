@@ -1,30 +1,34 @@
-document.getElementById('file-input').addEventListener('change', loadImage)
-document.getElementById('add-color').addEventListener('click', addColor)
-document.getElementById('process-image').addEventListener('click', updateCanvas)
+document.querySelector('#file-input').addEventListener('change', loadImage)
+document.querySelector('#add-color').addEventListener('click', addColor)
+
+addEventListener('paste', pasteImage)
 
 const canvas = document.getElementsByTagName('canvas')[0]
 const ctx = canvas.getContext('2d')
-let image = new Image()
+const processButton = document.querySelector('#process-image')
+
+processButton.addEventListener('click', updateCanvas)
 
 canvas.width = 1920
 canvas.height = 1080
 
 // Draw the upload image text
-ctx.font = 'lighter 90px sans-serif'
+ctx.font = 'lighter 66px sans-serif'
 ctx.textAlign = 'center'
 ctx.fillStyle = '#ccc'
-ctx.fillText('Upload image', canvas.width / 2, canvas.height / 2)
+ctx.fillText('Paste image or click to upload', canvas.width / 2, canvas.height / 2)
 
 /**
  * Display the image to the canvas
+ * @param {HTMLImageElement} image - The image to display
  */
-function displayImage() {
+function displayImage(image) {
   canvas.width = image.width
   canvas.height = image.height
 
   canvas.style.aspectRatio = image.width + '/' + image.height
-
   ctx.drawImage(image, 0, 0)
+  processButton.disabled = false
 }
 
 /**
@@ -33,15 +37,31 @@ function displayImage() {
  */
 function loadImage(e) {
   const reader = new FileReader()
-  reader.onload = event => {
+  reader.addEventListener('load', event => {
     const img = new Image()
-    img.onload = () => {
-      image = img
-      displayImage()
-    }
+    img.addEventListener('load', () => displayImage(img))
     img.src = event.target.result.toString()
-  }
+  })
   reader.readAsDataURL(e.target.files[0])
+}
+
+/**
+ * Load an image from the user clipboard
+ * @param {ClipboardEvent} e - The paste event
+ */
+function pasteImage(e) {
+  for (const item of e.clipboardData.items) {
+    if (item.kind != 'file') continue
+    const reader = new FileReader()
+    const file = item.getAsFile()
+    reader.addEventListener('load', event => {
+      const img = new Image()
+      img.addEventListener('load', () => displayImage(img))
+      img.src = event.target.result
+    })
+    reader.readAsDataURL(file)
+    break
+  }
 }
 
 /**
@@ -62,10 +82,6 @@ function hexToRgb(hex) {
  * Recolor the image
  */
 function updateCanvas() {
-  if (!image.src) return
-
-  displayImage()
-
   const palette = []
   for (const colorInp of document.getElementsByClassName('palette-color')) palette.push(hexToRgb(colorInp.value))
 
