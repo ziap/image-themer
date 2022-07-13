@@ -1,3 +1,14 @@
+:root {
+  --gap: 15px;
+  --gap-outer: calc(3.75 * var(--gap));
+}
+
+@media screen and (max-width: 600px) {
+  :root {
+    --gap: 7px;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,28 +17,28 @@
 }
 
 .container {
-  width: calc(100% - 90px);
+  width: calc(100% - calc(2 * var(--gap-outer)));
   max-width: 1024px;
-  margin: 0 auto 45px auto;
+  margin: 0 auto var(--gap-outer) auto;
 }
 
 .ui-container {
   width: 100%;
   border: 1px solid #dfe1e6;
-  margin-top: 45px;
+  margin-top: var(--gap-outer);
 }
 
 .header>* {
-  margin: 0 9px;
-  padding: 3px;
+  margin: 0 calc(var(--gap) / 2);
+  padding: calc(var(--gap) / 2);
 }
 
 .header {
-  margin: 12px;
+  margin: var(--gap);
 }
 
 #palette {
-  margin: 0 12px;
+  margin: 0 var(--gap);
   display: flex;
   flex-wrap: wrap;
 }
@@ -38,7 +49,7 @@ h3 {
 }
 
 #palette>div {
-  margin: 12px;
+  margin: var(--gap);
   display: flex;
   width: 84px;
 }
@@ -64,6 +75,6 @@ label {
 }
 
 #process-image {
-  margin: 12px 24px;
-  padding: 3px;
+  margin: var(--gap) calc(2 * var(--gap));
+  padding: calc(var(--gap) / 2);
 }
