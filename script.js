@@ -19,14 +19,11 @@ ctx.fillText('Upload image', canvas.width / 2, canvas.height / 2)
  * Display the image to the canvas
  */
 function displayImage() {
-  // Resize the canvas
   canvas.width = image.width
   canvas.height = image.height
 
-  // Change the canvas display size
   canvas.style.aspectRatio = image.width + '/' + image.height
 
-  // Draw the image to the canvas
   ctx.drawImage(image, 0, 0)
 }
 
@@ -65,17 +62,13 @@ function hexToRgb(hex) {
  * Recolor the image
  */
 function updateCanvas() {
-  // Check if image exists
   if (!image.src) return
 
-  // Load image to canvas
   displayImage()
 
-  // Retrieve the color palette from the document
   const palette = []
   for (const colorInp of document.getElementsByClassName('palette-color')) palette.push(hexToRgb(colorInp.value))
 
-  // Get array of pixels from the canvas
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
   const { width, height, data } = imgData
 
@@ -127,7 +120,6 @@ function updateCanvas() {
     }
   }
 
-  // Draw the recolored image to the canvas
   ctx.putImageData(imgData, 0, 0)
 }
 
@@ -135,20 +127,16 @@ function updateCanvas() {
  * Add a color to the selected palette
  */
 function addColor() {
-  // Create the elements
   const elem = document.createElement('div')
   const inp = document.createElement('input')
   const rem = document.createElement('button')
 
-  // Set the attributes
   inp.className = 'palette-color'
   inp.type = 'color'
   rem.innerHTML = '×'
 
-  // Add click event to the remove button
   rem.addEventListener('click', () => elem.remove())
 
-  // Append the elements to the document
   elem.appendChild(inp)
   elem.appendChild(rem)
   document.getElementById('palette').appendChild(elem)
@@ -174,7 +162,6 @@ fetch('themes.json').then(res => res.json()).then(data => {
     opt.value = opt.innerHTML = theme
     document.getElementById('select-palette').appendChild(opt)
 
-    // Load the first palette
     if (first) {
       loadpalette(data[theme])
       first = false
